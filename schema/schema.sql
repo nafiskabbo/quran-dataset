@@ -37,6 +37,7 @@ CREATE INDEX IF NOT EXISTS idx_verses_page ON verses(page);
 CREATE TABLE IF NOT EXISTS translations (
   verse_key TEXT NOT NULL,
   lang_code TEXT NOT NULL,
+  edition_id TEXT NOT NULL,
   translator TEXT NOT NULL,
   text TEXT NOT NULL,
   FOREIGN KEY (verse_key) REFERENCES verses(verse_key)
@@ -44,11 +45,13 @@ CREATE TABLE IF NOT EXISTS translations (
 
 CREATE INDEX IF NOT EXISTS idx_translations_verse_key ON translations(verse_key);
 CREATE INDEX IF NOT EXISTS idx_translations_lang ON translations(lang_code);
+CREATE INDEX IF NOT EXISTS idx_translations_edition ON translations(edition_id);
 
 -- Transliterations (e.g. English/Latin)
 CREATE TABLE IF NOT EXISTS transliterations (
   verse_key TEXT NOT NULL,
   lang_code TEXT NOT NULL,
+  edition_id TEXT NOT NULL,
   text TEXT NOT NULL,
   FOREIGN KEY (verse_key) REFERENCES verses(verse_key)
 );

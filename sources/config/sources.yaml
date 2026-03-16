@@ -17,11 +17,61 @@ surah_metadata:
   license: "API data; attribute source"
   attribution_text: "Surah metadata: Alquran.cloud API (https://api.alquran.cloud). Quran structure from Tanzil (https://tanzil.net/docs/Quran_Metadata)."
 
-# English translation (Saheeh International)
+# Text translations
 translations:
+  # English (Saheeh International)
   - identifier: "en.sahih"
     url: "https://api.alquran.cloud/v1/quran/en.sahih"
     lang_code: "en"
     translator: "Saheeh International"
     license: "Check edition license"
     attribution_text: "English translation by Saheeh International. Source: Alquran.cloud API (https://api.alquran.cloud)."
+
+  # Bengali
+  - identifier: "bn.bengali"
+    url: "https://api.alquran.cloud/v1/quran/bn.bengali"
+    lang_code: "bn"
+    translator: "Muhiuddin Khan"
+    license: "Check edition license"
+    attribution_text: "Bengali translation by Muhiuddin Khan (bn.bengali). Source: Alquran.cloud API (https://api.alquran.cloud)."
+
+  # Urdu
+  - identifier: "ur.jalandhry"
+    url: "https://api.alquran.cloud/v1/quran/ur.jalandhry"
+    lang_code: "ur"
+    translator: "Fateh Muhammad Jalandhry"
+    license: "Check edition license"
+    attribution_text: "Urdu translation by Fateh Muhammad Jalandhry (ur.jalandhry). Source: Alquran.cloud API (https://api.alquran.cloud)."
+
+  # French
+  - identifier: "fr.hamidullah"
+    url: "https://api.alquran.cloud/v1/quran/fr.hamidullah"
+    lang_code: "fr"
+    translator: "Muhammad Hamidullah"
+    license: "Check edition license"
+    attribution_text: "French translation by Muhammad Hamidullah (fr.hamidullah). Source: Alquran.cloud API (https://api.alquran.cloud)."
+
+  # Indonesian
+  - identifier: "id.indonesian"
+    url: "https://api.alquran.cloud/v1/quran/id.indonesian"
+    lang_code: "id"
+    translator: "Bahasa Indonesia edition (id.indonesian)"
+    license: "Check edition license"
+    attribution_text: "Indonesian translation (id.indonesian). Source: Alquran.cloud API (https://api.alquran.cloud)."
+
+# Transliteration (English)
+transliteration:
+  identifier: "en.transliteration"
+  url: "https://api.alquran.cloud/v1/quran/en.transliteration"
+  lang_code: "en"
+  license: "Check edition license"
+  attribution_text: "English transliteration (en.transliteration). Source: Alquran.cloud API (https://api.alquran.cloud)."
+
+# Audio recitation (per-verse)
+audio:
+  identifier: "ar.alafasy"
+  url: "https://api.alquran.cloud/v1/quran/ar.alafasy"
+  reciter_id: "ar.alafasy"
+  reciter_name: "Mishary Rashid Alafasy"
+  license: "Check edition license / streaming terms"
+  attribution_text: "Audio recitation by Mishary Rashid Alafasy (ar.alafasy). Source: Alquran.cloud API (https://api.alquran.cloud)."
