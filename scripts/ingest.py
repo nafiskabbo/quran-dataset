@@ -120,23 +120,115 @@ def main() -> None:
                 try:
                     sr = fetch_json(surah_url)
                 except Exception as e:
-                    print(f"  Warning: failed surah {surah_num}: {e}")
+                    print(f"  Warning: failed translation {tid} for surah {surah_num}: {e}")
                     continue
                 sd = sr.get("data") or {}
                 ayahs = sd.get("ayahs") or []
                 for a in ayahs:
                     num_in_surah = a.get("numberInSurah", a.get("number"))
                     verse_key = f"{surah_num}:{num_in_surah}"
-                    trans_rows.append((verse_key, lang, translator, (a.get("text") or "").strip()))
+                    trans_rows.append(
+                        (
+                            verse_key,
+                            lang,
+                            tid,
+                            translator,
+                            (a.get("text") or "").strip(),
+                        )
+                    )
                 if surah_num % 30 == 0:
-                    print(f"  Fetched translation for surahs 1-{surah_num}...")
+                    print(f"  Fetched translation {tid} for surahs 1-{surah_num}...")
             if trans_rows:
                 conn.executemany(
-                    "INSERT OR REPLACE INTO translations (verse_key, lang_code, translator, text) VALUES (?, ?, ?, ?)",
+                    "INSERT OR REPLACE INTO translations (verse_key, lang_code, edition_id, translator, text) VALUES (?, ?, ?, ?, ?)",
                     trans_rows,
                 )
                 conn.commit()
-                print(f"  Inserted {len(trans_rows)} translation rows for {translator}.")
+                print(f"  Inserted {len(trans_rows)} translation rows for {translator} ({lang}).")
+
+        # 4. Transliteration (optional, single edition)
+        translit_cfg = config.get("transliteration")
+        if translit_cfg:
+            tid = translit_cfg.get("identifier", "")
+            lang = translit_cfg.get("lang_code", "en")
+            print(f"Fetching transliteration {tid} (lang={lang})...")
+            translit_rows = []
+            for surah_num in range(1, 115):
+                surah_url = f"https://api.alquran.cloud/v1/surah/{surah_num}/{tid}"
+                try:
+                    sr = fetch_json(surah_url)
+                except Exception as e:
+                    print(f"  Warning: failed transliteration {tid} for surah {surah_num}: {e}")
+                    continue
+                sd = sr.get("data") or {}
+                ayahs = sd.get("ayahs") or []
+                for a in ayahs:
+                    num_in_surah = a.get("numberInSurah", a.get("number"))
+                    verse_key = f"{surah_num}:{num_in_surah}"
+                    translit_rows.append(
+                        (
+                            verse_key,
+                            lang,
+                            tid,
+                            (a.get("text") or "").strip(),
+                        )
+                    )
+                if surah_num % 30 == 0:
+                    print(f"  Fetched transliteration {tid} for surahs 1-{surah_num}...")
+            if translit_rows:
+                conn.executemany(
+                    "INSERT OR REPLACE INTO transliterations (verse_key, lang_code, edition_id, text) VALUES (?, ?, ?, ?)",
+                    translit_rows,
+                )
+                conn.commit()
+                print(f"  Inserted {len(translit_rows)} transliteration rows for lang={lang}.")
+
+        # 5. Audio (optional, single reciter; verse-by-verse URLs)
+        audio_cfg = config.get("audio")
+        if audio_cfg:
+            aid = audio_cfg.get("identifier", "")
+            reciter_id = audio_cfg.get("reciter_id", aid or "default")
+            print(f"Fetching audio recitation {aid} (reciter_id={reciter_id})...")
+            audio_rows = []
+            for surah_num in range(1, 115):
+                surah_url = f"https://api.alquran.cloud/v1/surah/{surah_num}/{aid}"
+                try:
+                    sr = fetch_json(surah_url)
+                except Exception as e:
+                    print(f"  Warning: failed audio {aid} for surah {surah_num}: {e}")
+                    continue
+                sd = sr.get("data") or {}
+                ayahs = sd.get("ayahs") or []
+                for a in ayahs:
+                    num_in_surah = a.get("numberInSurah", a.get("number"))
+                    verse_key = f"{surah_num}:{num_in_surah}"
+                    url = (a.get("audio") or "").strip()
+                    if not url:
+                        continue
+                    audio_rows.append(
+                        (
+                            verse_key,
+                            reciter_id,
+                            url,
+                            None,  # segment_url
+                            None,  # duration_sec (not provided by API)
+                            None,  # timestamp_start
+                            None,  # timestamp_end
+                        )
+                    )
+                if surah_num % 30 == 0:
+                    print(f"  Fetched audio {aid} for surahs 1-{surah_num}...")
+            if audio_rows:
+                conn.executemany(
+                    """
+                    INSERT OR REPLACE INTO audio
+                      (verse_key, reciter_id, url, segment_url, duration_sec, timestamp_start, timestamp_end)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    audio_rows,
+                )
+                conn.commit()
+                print(f"  Inserted {len(audio_rows)} audio rows for reciter_id={reciter_id}.")
 
         # Optional: write surahs.json mirror
         data_dir = get_data_dir()
