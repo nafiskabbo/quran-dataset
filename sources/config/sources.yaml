@@ -1,0 +1,27 @@
+# Data sources for ingest. Attribution for each is in docs/DATA_SOURCES.md
+
+# Arabic Uthmani text (Tanzil-derived; API used for convenience; attribute Tanzil)
+arabic:
+  url: "https://api.alquran.cloud/v1/quran/quran-uthmani"
+  license: "CC BY 3.0 (Tanzil Project)"
+  attribution_text: |
+    Arabic Quran text: Tanzil Quran Text
+    Copyright (C) 2007-2021 Tanzil Project
+    License: Creative Commons Attribution 3.0
+    Source: https://tanzil.net/
+    This text may not be modified. See https://tanzil.net/docs/Text_License
+
+# Surah metadata (names, verse counts, revelation type)
+surah_metadata:
+  url: "https://api.alquran.cloud/v1/surah"
+  license: "API data; attribute source"
+  attribution_text: "Surah metadata: Alquran.cloud API (https://api.alquran.cloud). Quran structure from Tanzil (https://tanzil.net/docs/Quran_Metadata)."
+
+# English translation (Saheeh International)
+translations:
+  - identifier: "en.sahih"
+    url: "https://api.alquran.cloud/v1/quran/en.sahih"
+    lang_code: "en"
+    translator: "Saheeh International"
+    license: "Check edition license"
+    attribution_text: "English translation by Saheeh International. Source: Alquran.cloud API (https://api.alquran.cloud)."
